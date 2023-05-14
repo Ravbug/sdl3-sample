@@ -23,6 +23,8 @@ I have tested the following:
 - iOS
 - tvOS
 - Windows
+- Linux
+- UWP
 
 ## Updating SDL
 Just update the submodule:

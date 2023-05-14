@@ -9,18 +9,25 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 project(sdl2-min)
 
 # Create an executable and add our sources to it.
-add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard)
+add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
 # What is iosLaunchScreen.storyboard? This file describes what Apple's mobile platforms
 # should show the user while the application is starting up. If you don't include one,
 # then you get placed in a compatibility mode that does not allow HighDPI.
 # This file is referenced inside Info.plist.in, where it is marked as the launch screen file.
 # It is also ignored on non-Apple platforms. 
 
+# What is Sample.appxManifest? This file describes deployment settings for Universal Windows Platform
+# applications, like splash screen and icon resolutions, which are required for the application to run. 
+# It is ignored on other platforms. Below, we add those images. 
+if (WINDOWS_STORE)
+    target_sources("${PROJECT_NAME}" PRIVATE "src/logo44.png" "src/logo150.png" "src/logo50.png" "src/logo620x300.png")
+endif()
+
 # use C++11
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 
 # If targeting Windows UWP, enable Windows Runtime Compilation
-if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+if(WINDOWS_STORE)
     target_compile_options(${PROJECT_NAME} PUBLIC "/ZW" "/EHsc")
 endif()
 
