@@ -1,4 +1,10 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.16)
+
+# set the output directory for built objects.
+# This makes sure that the dynamic library goes into the build directory automatically.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+
 # Declare the project
 project(sdl2-min)
 
@@ -12,6 +18,11 @@ add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard)
 
 # use C++11
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+
+# If targeting Windows UWP, enable Windows Runtime Compilation
+if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    target_compile_options(${PROJECT_NAME} PUBLIC "/ZW" "/EHsc")
+endif()
 
 # Configure SDL by calling its CMake file.
 # we use EXCLUDE_FROM_ALL so that its install targets and configs don't
@@ -36,6 +47,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_CURRENTYEAR "${CURRENTYEAR}"
 )
+
+# on Visual Studio, set our app as the default project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${PROJECT_NAME}")
 
 # On Apple Platforms, ensure that 
 # the bundle is valid for distribution.

@@ -8,8 +8,8 @@ See `src/main.cpp` for the code.
 First install your compiler of choice and CMake. Then, follow the commands below:
 ```sh
 # You need to clone with submodules, otherwise SDL will not download.
-git clone https://github.com/Ravbug/sdl2-cmake-example --depth=1 --recurse-submodules
-cd sdl2-cmake-example
+git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules
+cd sdl3-sample
 mkdir build
 cd build
 cmake ..
@@ -22,6 +22,7 @@ I have tested the following:
 - macOS
 - iOS
 - tvOS
+- Windows
 
 ## Updating SDL
 Just update the submodule:
