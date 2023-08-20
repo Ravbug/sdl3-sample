@@ -7,7 +7,7 @@
 	<Identity Name="39530109-D481-30A9-800E-D880CAA4D892" Publisher="CN=Ravbug" Version="1.0.0.0" />
 	<mp:PhoneIdentity PhoneProductId="39530109-D481-30A9-800E-D880CAA4D892" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 	<Properties>
-		<DisplayName>sdl2-min</DisplayName>
+		<DisplayName>sdl-min</DisplayName>
 		<PublisherDisplayName>Ravbug</PublisherDisplayName>
 		<Logo>logo50.png</Logo>
 	</Properties>
@@ -18,10 +18,10 @@
 		<Resource Language="en-us" />
 	</Resources>
 	<Applications>
-		<Application Id="App" Executable="sdl2-min.exe" EntryPoint="sdl2-min.App">
+		<Application Id="App" Executable="sdl-min.exe" EntryPoint="sdl-min.App">
 			<uap:VisualElements
-				DisplayName="sdl2min"
-				Description="sdl2min UWP Build"
+				DisplayName="sdlmin"
+				Description="sdlmin UWP Build"
 				BackgroundColor="#222222"
 				Square150x150Logo="logo150.png"
 				Square44x44Logo="logo44.png">

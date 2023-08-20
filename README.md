@@ -22,6 +22,7 @@ I have tested the following:
 - macOS
 - iOS
 - tvOS
+- visionOS
 - Windows
 - Linux
 - UWP
