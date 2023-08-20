@@ -26,6 +26,10 @@ endif()
 # use C++11
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 
+if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
+	set(CMAKE_EXECUTABLE_SUFFIX ".html" CACHE INTERNAL "")
+endif()
+
 # If targeting Windows UWP, enable Windows Runtime Compilation
 if(WINDOWS_STORE)
     target_compile_options(${PROJECT_NAME} PUBLIC "/ZW" "/EHsc")
@@ -35,6 +39,7 @@ endif()
 # we use EXCLUDE_FROM_ALL so that its install targets and configs don't
 # pollute upwards into our configuration.
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
+
 
 # Link SDL to our executable. This also makes its include directory available to us. 
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL3::SDL3)

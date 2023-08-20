@@ -26,6 +26,7 @@ I have tested the following:
 - Windows
 - Linux
 - UWP
+- Web browsers (via Emscripten)
 
 ## Updating SDL
 Just update the submodule:
