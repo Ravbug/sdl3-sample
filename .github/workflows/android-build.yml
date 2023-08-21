@@ -1,0 +1,52 @@
+name: Build Sample for Android
+
+on:
+  push
+
+jobs:
+  apk:
+    name: Apk Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+              sudo apt update
+              sudo apt install openjdk-8-jdk ant android-sdk-platform-tools-common android-sdk ninja-build
+      - name: Setup Path
+        run: |
+              PATH="/usr/src/android-sdk/platform-tools:$PATH"
+              export ANDROID_HOME="/usr/src/android-sdk"
+      - name: Install and setup SDKManager
+        run: |
+              wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+              unzip commandlinetools-linux-6609375_latest.zip -d cmdline-tools
+              mkdir --parents "$ANDROID_HOME/cmdline-tools/latest"
+              sudo mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
+              export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+              sdkmanager --sdk_root=$ANDROID_HOME --install "platforms;android-31" "build-tools;31.0.0"
+              yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
+      - name: Clone the project and prepare the build
+        run: |
+              git clone -b cmake https://github.com/captain1947/sdl3-sample --depth=1 --recurse-submodules
+              rsync -r ./sdl3-sample/src/ ./sdl3-sample/SDL/android-project/app/jni/src
+              cp ./sdl3-sample/android/CMakeLists.txt ./sdl3-sample/SDL/android-project/app/jni/src/
+      - name: Update the build.gradle
+        run:  cp ./sdl3-sample/android/build.gradle ./sdl3-sample/SDL/android-project/app/
+
+      - name: Add SDL
+        run: |
+              rsync -r ./sdl3-sample/SDL ./sdl3-sample/SDL/android-project/app/jni/
+
+      - name: Build APK
+        run: |
+              cd ./sdl3-sample/SDL/android-project/
+              ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3.1.2
+        with: 
+          name: artifact
+          path: ./sdl3-sample/SDL/android-project/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
