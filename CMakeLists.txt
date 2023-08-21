@@ -37,11 +37,12 @@ endif()
 
 # Configure SDL by calling its CMake file.
 # we use EXCLUDE_FROM_ALL so that its install targets and configs don't
-# pollute upwards into our configuration
-if (!ANDROID)
-	add_subdirectory(SDL EXCLUDE_FROM_ALL)
-endif()
+# pollute upwards into our configuration.
+add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
+if (ANDROID)
+	target_include_directories(main PRIVATE ../SDL/include/SDL3 ../SDL/include)
+endif()
 
 # Link SDL to our executable. This also makes its include directory available to us. 
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL3::SDL3)
