@@ -9,14 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 project(sdl-min)
 
 # Create an executable and add our sources to it.
-if (ANDROID)
-	find_library(SDL3 SDL3)
-	add_library(sdl-min SHARED)
-	target_include_directories(sdl-min PRIVATE ../SDL/include/SDL3 ../SDL/include)
-	target_sources(sdl-min PRIVATE main.cpp)
-else()
-	add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
-endif()
+add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
 # What is iosLaunchScreen.storyboard? This file describes what Apple's mobile platforms
 # should show the user while the application is starting up. If you don't include one,
 # then you get placed in a compatibility mode that does not allow HighDPI.
