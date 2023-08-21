@@ -41,7 +41,7 @@ endif()
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
 if (ANDROID)
-	target_include_directories(main PRIVATE ../SDL/include/SDL3 ../SDL/include)
+	target_include_directories(${PROJECT_NAME} PRIVATE ../SDL/include/SDL3 ../SDL/include)
 endif()
 
 # Link SDL to our executable. This also makes its include directory available to us. 
