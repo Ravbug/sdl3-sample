@@ -9,7 +9,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 project(sdl-min)
 
 # Create an executable and add our sources to it.
-add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
+if (ANDROID)
+	find_library(SDL3 SDL3)
+	add_library(main SHARED)
+	target_include_directories(main PRIVATE ../SDL/include/SDL3 ../SDL/include)
+	target_sources(main PRIVATE main.cpp)
+else()
+	add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
+endif()
 # What is iosLaunchScreen.storyboard? This file describes what Apple's mobile platforms
 # should show the user while the application is starting up. If you don't include one,
 # then you get placed in a compatibility mode that does not allow HighDPI.
@@ -37,8 +44,10 @@ endif()
 
 # Configure SDL by calling its CMake file.
 # we use EXCLUDE_FROM_ALL so that its install targets and configs don't
-# pollute upwards into our configuration.
-add_subdirectory(SDL EXCLUDE_FROM_ALL)
+# pollute upwards into our configuration
+if (!ANDROID)
+	add_subdirectory(SDL EXCLUDE_FROM_ALL)
+endif()
 
 
 # Link SDL to our executable. This also makes its include directory available to us. 
