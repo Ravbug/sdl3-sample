@@ -10,6 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - with:
+          ref: android-build-with-cmake
       - name: Install dependencies
         run: |
               sudo apt update
@@ -29,7 +31,7 @@ jobs:
               yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
       - name: Clone the project and prepare the build
         run: |
-              git clone -b android-build-with-cmake https://github.com/captain1947/sdl3-sample --depth=1 --recurse-submodules
+              git clone https://github.com/captain1947/sdl3-sample --depth=1 --recurse-submodules
               rsync -r ./sdl3-sample/src/ ./sdl3-sample/SDL/android-project/app/jni/src
               cp ./sdl3-sample/android/CMakeLists.txt ./sdl3-sample/SDL/android-project/app/jni/src/
       - name: Update the build.gradle
