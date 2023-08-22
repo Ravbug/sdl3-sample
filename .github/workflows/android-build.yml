@@ -29,8 +29,7 @@ jobs:
               yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
       - name: Update the build.gradle
         run:  |
-               pwd
-               cp $GITHUB_WORKSPACE/android/build.gradle $GITHUB_WORKSPACE/SDL/android-project/app/
+               cp android/build.gradle SDL/android-project/app/
 
       - name: Build APK
         run: |
