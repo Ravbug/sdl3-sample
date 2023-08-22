@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: android-build-with-cmake
       - name: Install dependencies
         run: |
               sudo apt update
