@@ -8,12 +8,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 # Declare the project
 project(sdl-min)
 
-# Create an executable and add our sources to it.
+# Add the sources to the target
+target_sources(${PROJECT_NAME} PRIVATE src/main.cpp)
+
+# Create an executable in other platforms and in android create a shared library
 if (!ANDROID)
-	add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
+	add_executable(${PROJECT_NAME} src/iosLaunchScreen.storyboard src/Sample.appxManifest)
 else()
 	add_library(${PROJECT_NAME} SHARED)
-	target_sources(${PROJECT_NAME} PRIVATE src/main.cpp)
 	target_include_directories(${PROJECT_NAME} PRIVATE SDL/include/SDL3 SDL/include)
 endif()
 
