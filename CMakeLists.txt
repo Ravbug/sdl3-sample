@@ -83,10 +83,12 @@ project(sdl-min)
 
 add_subdirectory(SDL)
 
-add_library(${PROJECT_NAME} SHARED)
+# add_library(${PROJECT_NAME} SHARED)
+
+add_executable(${PROJECT_NAME} src/main.cpp src/iosLaunchScreen.storyboard src/Sample.appxManifest)
 
 target_include_directories(${PROJECT_NAME} PRIVATE SDL/include/SDL3 SDL/include)
 
-target_sources(${PROJECT_NAME} PRIVATE src/main.cpp)
+# target_sources(${PROJECT_NAME} PRIVATE src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+target_link_libraries(${PROJECT_NAME} PUBLIC SDL3::SDL3)
