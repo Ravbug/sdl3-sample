@@ -28,7 +28,9 @@ jobs:
               sdkmanager --sdk_root=$ANDROID_HOME --install "platforms;android-31" "build-tools;31.0.0"
               yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
       - name: Update the build.gradle
-        run:  cp android/build.gradle SDL/android-project/app/
+        run:  |
+               pwd
+               cp android/build.gradle SDL/android-project/app/
 
       - name: Build APK
         run: |
