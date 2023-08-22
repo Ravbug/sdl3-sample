@@ -14,10 +14,10 @@ set(SOURCES ${SRC_PATH}/main.cpp)
 
 # Create an executable or a shared library based on the platform and add our sources to it
 if (!ANDROID)
-	add_executable(${PROJECT_NAME} SOURCES ${SRC_PATH}/iosLaunchScreen.storyboard ${SRC_PATH}/Sample.appxManifest)
+	add_executable(${PROJECT_NAME} ${SOURCES} ${SRC_PATH}/iosLaunchScreen.storyboard ${SRC_PATH}/Sample.appxManifest)
 else()
 	add_library(${PROJECT_NAME} SHARED)
-	target_sources(${PROJECT_NAME} PRIVATE SOURCES)
+	target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 	target_include_directories(${PROJECT_NAME} PRIVATE SDL/include/SDL3 SDL/include)
 endif()
 
