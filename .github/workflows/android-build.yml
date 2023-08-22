@@ -30,7 +30,7 @@ jobs:
       - name: Update the build.gradle
         run:  |
                pwd
-               cp android/build.gradle SDL/android-project/app/
+               cp $GITHUB_WORKSPACE/android/build.gradle $GITHUB_WORKSPACE/SDL/android-project/app/
 
       - name: Build APK
         run: |
