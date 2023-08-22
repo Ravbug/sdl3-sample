@@ -15,7 +15,6 @@ project(sdl-min)
 # Create an executable or a shared library based on the platform and add our sources to it
 if (ANDROID)
 	add_library(${PROJECT_NAME} SHARED)
-	# target_include_directories(${PROJECT_NAME} PRIVATE SDL/include/SDL3 SDL/include)
 else()
 	add_executable(${PROJECT_NAME})
 endif()

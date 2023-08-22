@@ -49,7 +49,7 @@ android {
             //     path 'jni/Android.mk'
             // }
             cmake {
-                path "jni/CMakeLists.txt"
+                path "../../../CMakeLists.txt"
                 version "3.22.1"
             }
         }
