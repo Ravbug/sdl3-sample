@@ -30,10 +30,6 @@ jobs:
       - name: Update the build.gradle
         run:  cp android/build.gradle SDL/android-project/app/
 
-      - name: Add SDL
-        run: |
-              rsync -r ./sdl3-sample/SDL ./sdl3-sample/SDL/android-project/app/jni/
-
       - name: Build APK
         run: |
               cd ./sdl3-sample/SDL/android-project/
