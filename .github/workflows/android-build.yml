@@ -40,8 +40,8 @@ jobs:
               ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with: 
           name: artifact
-          path: ./sdl3-sample/SDL/android-project/app/build/outputs/apk/debug/app-debug.apk
+          path: SDL/android-project/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
