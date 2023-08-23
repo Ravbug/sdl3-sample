@@ -8,18 +8,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 # Declare the project
 project(sdl-min)
 
-# Add all the sources
-# set(SRC_PATH src)
-# set(SOURCES ${SRC_PATH}/main.cpp)
+# Set the name of the executable
+set(EXECUTABLE_NAME ${PROJECT_NAME})
 
 # Create an executable or a shared library based on the platform and add our sources to it
 if (ANDROID)
-	add_library(${PROJECT_NAME} SHARED)
+	# The SDL java code is hardcoded to load libmain.so in android so we need to change EXECUTABLE_NAME
+	set(EXECUTABLE_NAME ${PROJECT_NAME})
+	add_library(${EXECUTABLE_NAME} SHARED)
 else()
-	add_executable(${PROJECT_NAME})
+	add_executable(${EXECUTABLE_NAME})
 endif()
 
-target_sources(${PROJECT_NAME} 
+target_sources(${EXECUTABLE_NAME} 
 PRIVATE 
     src/main.cpp
     src/iosLaunchScreen.storyboard
@@ -36,11 +37,11 @@ PRIVATE
 # applications, like splash screen and icon resolutions, which are required for the application to run. 
 # It is ignored on other platforms. Below, we add those images. 
 if (WINDOWS_STORE)
-    target_sources("${PROJECT_NAME}" PRIVATE "src/logo44.png" "src/logo150.png" "src/logo50.png" "src/logo620x300.png")
+    target_sources("${EXECUTABLE_NAME}" PRIVATE "src/logo44.png" "src/logo150.png" "src/logo50.png" "src/logo620x300.png")
 endif()
 
 # use C++11
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+target_compile_features(${EXECUTABLE_NAME} PUBLIC cxx_std_11)
 
 if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
 	set(CMAKE_EXECUTABLE_SUFFIX ".html" CACHE INTERNAL "")
@@ -48,7 +49,7 @@ endif()
 
 # If targeting Windows UWP, enable Windows Runtime Compilation
 if(WINDOWS_STORE)
-    target_compile_options(${PROJECT_NAME} PUBLIC "/ZW" "/EHsc")
+    target_compile_options(${EXECUTABLE_NAME} PUBLIC "/ZW" "/EHsc")
 endif()
 
 # Configure SDL by calling its CMake file.
@@ -57,10 +58,10 @@ endif()
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
 # Link SDL to our executable. This also makes its include directory available to us. 
-target_link_libraries(${PROJECT_NAME} PUBLIC SDL3::SDL3)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC SDL3::SDL3)
 
 # set some extra configs for each platform
-set_target_properties(${PROJECT_NAME} PROPERTIES 
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES 
     # On macOS, make a proper .app bundle instead of a bare executable
     MACOSX_BUNDLE TRUE
     # Set the Info.plist file for Apple Mobile platforms. Without this file, your app
@@ -76,14 +77,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # on Visual Studio, set our app as the default project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${PROJECT_NAME}")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EXECUTABLE_NAME}")
 
 # On Apple Platforms, ensure that 
 # the bundle is valid for distribution.
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 INSTALL(CODE 
     "include(BundleUtilities)
-    fixup_bundle(\"${CMAKE_INSTALL_PREFIX}/$<CONFIGURATION>/${PROJECT_NAME}.app\" \"\" \"\")
+    fixup_bundle(\"${CMAKE_INSTALL_PREFIX}/$<CONFIGURATION>/${EXECUTABLE_NAME}.app\" \"\" \"\")
     " 
     COMPONENT Runtime
 )
