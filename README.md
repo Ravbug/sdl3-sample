@@ -26,7 +26,10 @@ I have tested the following:
 - Windows
 - Linux
 - UWP
-- Web browsers (via Emscripten)
+- Web browsers (via Emscripten)*
+- Android*
+
+*See further instructions in `config/`
 
 ## Updating SDL
 Just update the submodule:
