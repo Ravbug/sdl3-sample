@@ -16,9 +16,6 @@ if (ANDROID)
 	# The SDL java code is hardcoded to load libmain.so on android, so we need to change EXECUTABLE_NAME
 	set(EXECUTABLE_NAME main)
 	add_library(${EXECUTABLE_NAME} SHARED)
-	# Link SDL statically on android
-	option(SDL_SHARED "" OFF)
-	option(SDL_STATIC "" ON)
 else()
 	add_executable(${EXECUTABLE_NAME})
 endif()
