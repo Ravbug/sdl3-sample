@@ -13,10 +13,12 @@ set(EXECUTABLE_NAME ${PROJECT_NAME})
 
 # Create an executable or a shared library based on the platform and add our sources to it
 if (ANDROID)
-	# The SDL java code is hardcoded to load libmain.so in android so we need to change EXECUTABLE_NAME
-	add_library(${PROJECT_NAME} STATIC)
-    add_library(main SHARED)
-    target_link_libraries(main PUBLIC ${PROJECT_NAME})
+	# The SDL java code is hardcoded to load libmain.so on android, so we need to change EXECUTABLE_NAME
+	set(EXECUTABLE_NAME main)
+	add_library(${EXECUTABLE_NAME} SHARED)
+	# Link SDL statically on android
+	option(SDL_SHARED "" OFF)
+	option(SDL_STATIC "" ON)
 else()
 	add_executable(${EXECUTABLE_NAME})
 endif()

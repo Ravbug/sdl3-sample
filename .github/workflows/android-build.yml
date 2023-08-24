@@ -17,11 +17,10 @@ jobs:
         run: |
               sudo apt update
               sudo apt install openjdk-8-jdk ant android-sdk-platform-tools-common android-sdk ninja-build
-      - name: Setup Path
+      - name: Export the path to the android-sdk as ANDROID_HOME
         run: |
-              PATH="/usr/src/android-sdk/platform-tools:$PATH"
               export ANDROID_HOME="/usr/src/android-sdk"
-      - name: Install and setup SDKManager
+      - name: Install and setup sdkmanager and other commandline tools
         run: |
               wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
               unzip commandlinetools-linux-6609375_latest.zip -d cmdline-tools
@@ -34,12 +33,12 @@ jobs:
         run:  |
                cp build.gradle SDL/android-project/app/
 
-      - name: Build APK
+      - name: Build the APK
         run: |
               cd SDL/android-project/
               ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload the APK
         uses: actions/upload-artifact@v3
         with: 
           name: artifact
