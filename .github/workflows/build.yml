@@ -11,7 +11,7 @@ jobs:
         with:
           submodules: true
       - name: Get Emscripten
-        run: | 
+        run: |
           git clone https://github.com/emscripten-core/emsdk.git --depth=1
           cd emsdk
           ./emsdk install latest

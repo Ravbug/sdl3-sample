@@ -10,7 +10,7 @@
 #endif
 
 void SDL_Fail(){
-    std::cerr << SDL_GetError() << std::endl;
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
     exit(1);
 }
 
@@ -54,13 +54,14 @@ int main(int argc, char* argv[]){
         int width, height, bbwidth, bbheight;
         SDL_GetWindowSize(window, &width, &height);
         SDL_GetWindowSizeInPixels(window, &bbwidth, &bbheight);
-        std::cout << "Window size:\t\t" << width << " x " << height << "\nBackbuffer size:\t" << bbwidth << " x " << bbheight << "\n";
+        SDL_Log("Window size: %ix%i", width, height);
+        SDL_Log("Backbuffer size: %ix%i", bbwidth, bbheight);
         if (width != bbwidth){
-            std::cout << "This is a highdpi environment.\n";
+            SDL_Log("This is a highdpi environment.");
         }
     }
     
-    std::cout << "Application started successfully!" << std::endl;
+    SDL_Log("Application started successfully!");
     
 #if __EMSCRIPTEN__
     // on Emscripten, we cannot have an infinite loop in main. Instead, we must
@@ -76,7 +77,7 @@ int main(int argc, char* argv[]){
 #if !__EMSCRIPTEN__
     SDL_DestroyWindow(window);
     SDL_Quit();
-    std::cout << "Application quit successfully!" << std::endl;
+    SDL_Log("Application quit successfully!");
 #endif
     return 0;
 }
