@@ -1,7 +1,6 @@
 name: Build Sample for Android
 
-on:
-  push
+on: push
 
 jobs:
   apk:
@@ -13,22 +12,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Install dependencies
-        run: |
-              sudo apt update
-              sudo apt install openjdk-8-jdk ant android-sdk-platform-tools-common android-sdk ninja-build
-      - name: Export the path to the android-sdk as ANDROID_HOME
-        run: |
-              export ANDROID_HOME="/usr/src/android-sdk"
-      - name: Install and setup sdkmanager and other commandline tools
-        run: |
-              wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-              unzip commandlinetools-linux-6609375_latest.zip -d cmdline-tools
-              mkdir --parents "$ANDROID_HOME/cmdline-tools/latest"
-              sudo mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
-              export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-              sdkmanager --sdk_root=$ANDROID_HOME --install "platforms;android-31" "build-tools;31.0.0"
-              yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
       - name: Update the build.gradle
         run:  |
                cp build.gradle SDL/android-project/app/
@@ -43,4 +26,3 @@ jobs:
         with: 
           name: artifact
           path: SDL/android-project/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 1
