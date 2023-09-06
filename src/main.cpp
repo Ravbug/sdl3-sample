@@ -15,23 +15,28 @@ void SDL_Fail(){
 }
 
 static bool app_quit = false;
+SDL_Renderer* renderer = nullptr;
 
 void main_loop() {
     // Get events. If you are making a game, you probably want SDL_PollEvent instead of SDL_WaitEvent.
     // you cannot use WaitEvent on Emscripten, because you cannot block the main thread there.
 
-#if __EMSCRIPTEN__
-    #define SDL_GetEvent SDL_PollEvent
-#else
-    #define SDL_GetEvent SDL_WaitEvent
-#endif
-
     SDL_Event event;
-    while (SDL_GetEvent(&event)) {
+    while (SDL_PollEvent(&event)) {
         if (event.type == SDL_EVENT_QUIT)
             app_quit = true;
         break;
     }
+    
+    // draw a color
+    auto time = SDL_GetTicks() / 1000.f;
+    auto red = (std::sin(time) + 1) / 2.0 * 255;
+    auto green = (std::sin(time / 2) + 1) / 2.0 * 255;
+    auto blue = (std::sin(time) * 2 + 1) / 2.0 * 255;
+    
+    SDL_SetRenderDrawColor(renderer, 0, red, green, blue);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
 }
 
 // Note: your main function __must__ take this form, otherwise on nonstandard platforms (iOS, etc), your app will not launch.
@@ -45,6 +50,11 @@ int main(int argc, char* argv[]){
     // create a window
     SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE);
     if (!window){
+        SDL_Fail();
+    }
+    
+    renderer = SDL_CreateRenderer(window, NULL, 0);
+    if (!renderer){
         SDL_Fail();
     }
     
@@ -75,6 +85,7 @@ int main(int argc, char* argv[]){
 
     // cleanup everything at the end
 #if !__EMSCRIPTEN__
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     SDL_Log("Application quit successfully!");
