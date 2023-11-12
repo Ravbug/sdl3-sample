@@ -38,6 +38,8 @@ PRIVATE
 # It is ignored on other platforms. Below, we add those images. 
 if (WINDOWS_STORE)
     target_sources("${EXECUTABLE_NAME}" PRIVATE "src/logo44.png" "src/logo150.png" "src/logo50.png" "src/logo620x300.png")
+elseif(APPLE)
+    target_sources("${EXECUTABLE_NAME}" PRIVATE "src/logo.png")
 endif()
 
 # use C++11
