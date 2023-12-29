@@ -8,7 +8,7 @@ else {
 }
 
 android {
-    namespace "com.ravbug.sdl-min"
+    namespace "com.ravbug.sdlmin"
     compileSdkVersion 31
     defaultConfig {
         if (buildAsApplication) {
