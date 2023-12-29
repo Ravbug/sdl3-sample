@@ -28,5 +28,5 @@ jobs:
       - name: Upload the APK
         uses: actions/upload-artifact@v3
         with: 
-          name: artifact
+          name: app-debug.apk
           path: SDL/android-project/app/build/outputs/apk/debug/app-debug.apk
