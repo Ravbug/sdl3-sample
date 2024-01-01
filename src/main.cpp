@@ -35,7 +35,7 @@ void main_loop() {
     auto green = (std::sin(time / 2) + 1) / 2.0 * 255;
     auto blue = (std::sin(time) * 2 + 1) / 2.0 * 255;
     
-    SDL_SetRenderDrawColor(renderer, 0, red, green, blue);
+    SDL_SetRenderDrawColor(renderer, red, green, blue, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 }
