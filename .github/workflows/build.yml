@@ -5,21 +5,26 @@ jobs:
     build-win:
         name: Build for Windows
         runs-on: windows-latest
+        strategy:
+          fail-fast: false
+          matrix:
+              arch: [x64, ARM64]
+              target: [Windows]
 
         steps:
-          - uses: actions/checkout@v3
+          - uses: actions/checkout@v4
             with:
                 submodules: true
           - name: Configure
             run: | 
                 mkdir build && cd build
-                cmake ..
+                cmake -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DCMAKE_SYSTEM_VERSION="10.0" -A${{ matrix.arch }} ..
           - name: Build
             run: cmake --build build --target sdl-min --config Release
           - name: Upload Build
             uses: actions/upload-artifact@v3
             with: 
-                name: sdl-min-win
+                name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
                 path: |
                     build/Release/*.exe
                     build/Release/*.dll
@@ -28,13 +33,13 @@ jobs:
         name: Build for macOS
         runs-on: macos-latest
         steps:
-          - uses: actions/checkout@v3
+          - uses: actions/checkout@v4
             with:
                 submodules: true
           - name: Configure
             run: | 
                 mkdir build && cd build
-                cmake -G "Xcode" ..
+                cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO ..
           - name: Build
             run: cmake --build build --target install --config Release
 
@@ -47,5 +52,3 @@ jobs:
             with: 
                 name: sdl-min-mac
                 path: build/*.dmg
-
-

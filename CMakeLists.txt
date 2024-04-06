@@ -46,7 +46,7 @@ elseif(APPLE)
 endif()
 
 # use C++11
-target_compile_features(${EXECUTABLE_NAME} PUBLIC cxx_std_11)
+target_compile_features(${EXECUTABLE_NAME} PUBLIC cxx_std_20)
 
 if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
 	set(CMAKE_EXECUTABLE_SUFFIX ".html" CACHE INTERNAL "")
