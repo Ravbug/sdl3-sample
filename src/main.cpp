@@ -1,13 +1,12 @@
-#include <iostream>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <cmath>
 
-typedef struct app_data {
+struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    SDL_bool app_quit;
-} app_data;
+    SDL_bool app_quit = SDL_FALSE;
+};
 
 int SDL_Fail(){
     SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
@@ -45,11 +44,10 @@ int SDL_AppInit(void** appstate, int argc, char* argv[]) {
     }
 
     // set up the application data
-    app_data* app = (app_data*)SDL_malloc(sizeof(app_data));
-    app->window = window;
-    app->renderer = renderer;
-    app->app_quit = SDL_FALSE;
-    *appstate = (void*)app;
+    *appstate = new AppContext{
+       window,
+       renderer,
+    };
     
     SDL_Log("Application started successfully!");
 
@@ -57,7 +55,7 @@ int SDL_AppInit(void** appstate, int argc, char* argv[]) {
 }
 
 int SDL_AppEvent(void *appstate, const SDL_Event* event) {
-    app_data* app = (app_data*)appstate;
+    auto* app = (AppContext*)appstate;
     
     if (event->type == SDL_EVENT_QUIT) {
         app->app_quit = SDL_TRUE;
@@ -67,7 +65,7 @@ int SDL_AppEvent(void *appstate, const SDL_Event* event) {
 }
 
 int SDL_AppIterate(void *appstate) {
-    app_data* app = (app_data*)appstate;
+    auto* app = (AppContext*)appstate;
 
     // draw a color
     auto time = SDL_GetTicks() / 1000.f;
@@ -83,11 +81,11 @@ int SDL_AppIterate(void *appstate) {
 }
 
 void SDL_AppQuit(void* appstate) {
-    app_data* app = (app_data*)appstate;
+    auto* app = (AppContext*)appstate;
     if (app) {
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
-        SDL_free(app);
+        delete app;
     }
 
     SDL_Quit();
