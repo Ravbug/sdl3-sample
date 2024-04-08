@@ -22,7 +22,7 @@ jobs:
           - name: Build
             run: cmake --build build --target sdl-min --config Release
           - name: Upload Build
-            uses: actions/upload-artifact@v3
+            uses: actions/upload-artifact@v4
             with: 
                 name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
                 path: |
@@ -32,6 +32,11 @@ jobs:
     build-mac:
         name: Build for macOS
         runs-on: macos-latest
+        strategy:
+          fail-fast: false
+          matrix:
+              target: [iOS, tvOS, '']
+
         steps:
           - uses: actions/checkout@v4
             with:
@@ -39,16 +44,16 @@ jobs:
           - name: Configure
             run: | 
                 mkdir build && cd build
-                cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO ..
+                cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} ..
           - name: Build
             run: cmake --build build --target install --config Release
 
           - name: Create DMG
             run: | 
                 cd build
-                hdiutil create -size 2g -srcfolder release -volname sdl_min_mac sdl_min_mac.dmg
+                hdiutil create -size 2g -srcfolder release -volname sdl_min_apple_${{ matrix.target }} sdl_min_apple_${{ matrix.target }}.dmg
           - name: Upload Build
-            uses: actions/upload-artifact@v3
+            uses: actions/upload-artifact@v4
             with: 
-                name: sdl-min-mac
+                name: sdl-min-apple-${{ matrix.target }}
                 path: build/*.dmg
