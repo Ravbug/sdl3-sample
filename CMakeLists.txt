@@ -53,8 +53,9 @@ if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
 endif()
 
 # If targeting Windows UWP, enable Windows Runtime Compilation
+# if using a C++ version older than C++20, you also need /ZW
 if(WINDOWS_STORE)
-    target_compile_options(${EXECUTABLE_NAME} PUBLIC "/ZW" "/EHsc")
+    target_compile_options(${EXECUTABLE_NAME} PUBLIC "/EHsc")
 endif()
 
 # Configure SDL by calling its CMake file.
@@ -85,13 +86,12 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
 # on Visual Studio, set our app as the default project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EXECUTABLE_NAME}")
 
-# On Apple Platforms, ensure that 
-# the bundle is valid for distribution.
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-INSTALL(CODE 
-    "include(BundleUtilities)
-    fixup_bundle(\"${CMAKE_INSTALL_PREFIX}/$<CONFIGURATION>/${EXECUTABLE_NAME}.app\" \"\" \"\")
-    " 
-    COMPONENT Runtime
-)
+# On Apple Platforms, ensure that the bundle is valid for distribution by calling fixup_bundle.
+if(APPLE)
+    INSTALL(CODE 
+        "include(BundleUtilities)
+        fixup_bundle(\"${CMAKE_INSTALL_PREFIX}/$<CONFIGURATION>/${EXECUTABLE_NAME}.app\" \"\" \"\")
+        " 
+        COMPONENT Runtime
+    )
 endif()

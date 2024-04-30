@@ -9,7 +9,7 @@ jobs:
           fail-fast: false
           matrix:
               arch: [x64, ARM64]
-              target: [Windows]
+              target: [Windows, WindowsStore]
 
         steps:
           - uses: actions/checkout@v4
@@ -23,6 +23,7 @@ jobs:
             run: cmake --build build --target sdl-min --config Release
           - name: Upload Build
             uses: actions/upload-artifact@v4
+            if: ${{ matrix.target != 'WindowsStore' }}
             with: 
                 name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
                 path: |
@@ -50,7 +51,7 @@ jobs:
                 mkdir build && cd build
                 cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DSDL_STATIC=ON -DSDL_SHARED=OFF ..
           - name: Build
-            run: cmake --build build --target sdl-min --config Release
+            run: cmake --build build --target install --config Release
 
           - name: Create DMG
             run: | 
