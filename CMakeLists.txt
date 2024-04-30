@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
 # prevent installing to system directories. 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} CACHE INTERNAL "")
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 
 # Declare the project
 project(sdl-min)
@@ -86,12 +86,16 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
 # on Visual Studio, set our app as the default project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EXECUTABLE_NAME}")
 
-# On Apple Platforms, ensure that the bundle is valid for distribution by calling fixup_bundle.
-if(APPLE)
+# On macOS Platforms, ensure that the bundle is valid for distribution by calling fixup_bundle.
+# note that fixup_bundle does not work on iOS, so you will want to use static libraries 
+# or manually copy dylibs and set rpaths
+if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     INSTALL(CODE 
         "include(BundleUtilities)
-        fixup_bundle(\"${CMAKE_INSTALL_PREFIX}/$<CONFIGURATION>/${EXECUTABLE_NAME}.app\" \"\" \"\")
+        fixup_bundle(\"$<TARGET_BUNDLE_DIR:${EXECUTABLE_NAME}>\" \"\" \"\")
         " 
         COMPONENT Runtime
     )
 endif()
+install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION ./install)
+
