@@ -1,59 +1,64 @@
-name: Build-Samples
-on: push
+name: Build Sample
+on: [push, pull_request]
 
 jobs:
-  build-web:
-    name: Build demo for Web
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          submodules: true
-      - name: Get Emscripten
-        run: |
-          git clone https://github.com/emscripten-core/emsdk.git --depth=1
-          cd emsdk
-          ./emsdk install tot
-          ./emsdk activate tot
-      - name: Build for web
-        run: |
-          source emsdk/emsdk_env.sh
-          mkdir build
-          cd build
-          emcmake cmake ..
-          cmake --build . --parallel
-      - name: Prepare for upload
-        run: |
-           mkdir _site
-           mv build/sdl-min.html _site/index.html
-           mv build/sdl-* _site/
-      - name: Fix permissions
-        run: |
-         chmod -c -R +rX "_site/" | while read line; do
-           echo "::warning title=Invalid file permissions automatically fixed::$line"
-         done
-      - name: Upload 
-        uses: actions/upload-pages-artifact@v2
-        
- # Deploy job
-  deploy:
-    # Add a dependency to the build job
-    needs: build-web
+    build-win:
+        name: Build for Windows
+        runs-on: windows-latest
+        strategy:
+          fail-fast: false
+          matrix:
+              arch: [x64, ARM64]
+              target: [Windows, WindowsStore]
 
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+        steps:
+          - uses: actions/checkout@v4
+            with:
+                submodules: true
+          - name: Configure
+            run: | 
+                mkdir build && cd build
+                cmake -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DCMAKE_SYSTEM_VERSION="10.0" -A${{ matrix.arch }} ..
+          - name: Build
+            run: cmake --build build --target sdl-min --config Release
+          - name: Upload Build
+            uses: actions/upload-artifact@v4
+            if: ${{ matrix.target != 'WindowsStore' }}
+            with: 
+                name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
+                path: |
+                    build/Release/*.exe
+                    build/Release/*.dll
 
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    build-mac:
+        name: Build for Apple
+        runs-on: macos-14
+        strategy:
+          fail-fast: false
+          matrix:
+              target: [iOS, tvOS, visionOS, '']
 
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
+        steps:
+          - uses: actions/checkout@v4
+            with:
+                submodules: true
+          - name: Setup Xcode version
+            uses: maxim-lobanov/setup-xcode@v1.6.0
+            with:
+                xcode-version: "15.2"
+          - name: Configure
+            run: | 
+                mkdir build && cd build
+                cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DSDL_STATIC=ON -DSDL_SHARED=OFF ..
+          - name: Build
+            run: cmake --build build --target install --config Release
+
+          - name: Create DMG
+            run: | 
+                cd build
+                hdiutil create -size 2g -srcfolder release -volname sdl_min_apple_${{ matrix.target }} sdl_min_apple_${{ matrix.target }}.dmg
+          - name: Upload Build
+            uses: actions/upload-artifact@v4
+            with: 
+                name: sdl-min-apple-${{ matrix.target }}
+                path: build/*.dmg

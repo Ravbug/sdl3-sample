@@ -8,26 +8,25 @@ else {
 }
 
 android {
-    namespace "com.ravbug.sdlmin"
-    compileSdkVersion 31
+    compileSdkVersion 34
+    if (buildAsApplication) {
+        namespace "org.libsdl.app"
+    }
     defaultConfig {
-        if (buildAsApplication) {
-            applicationId "org.libsdl.app"
-        }
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
             ndkBuild {
                 arguments "APP_PLATFORM=android-16"
                 // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                abiFilters 'arm64-v8a'
+                // abiFilters 'arm64-v8a'
             }
             cmake {
                 arguments "-DANDROID_APP_PLATFORM=android-16", "-DANDROID_STL=c++_static"
                 // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                abiFilters 'arm64-v8a'
+                // abiFilters 'arm64-v8a'
             }
         }
     }
@@ -39,7 +38,7 @@ android {
     }
     applicationVariants.all { variant ->
         tasks["merge${variant.name.capitalize()}Assets"]
-            .dependsOn("externalNativeBuild${variant.name.capitalize()}")
+                .dependsOn("externalNativeBuild${variant.name.capitalize()}")
     }
     if (!project.hasProperty('EXCLUDE_NATIVE_LIBS')) {
         sourceSets.main {
@@ -54,12 +53,12 @@ android {
                 version "3.22.1"
             }
         }
-       
+
     }
     lintOptions {
         abortOnError false
     }
-    
+
     if (buildAsLibrary) {
         libraryVariants.all { variant ->
             variant.outputs.each { output ->

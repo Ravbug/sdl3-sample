@@ -1,0 +1,59 @@
+name: Build Sample For Web
+on: [push, pull_request]
+
+jobs:
+  build-web:
+    name: Build demo for Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Get Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git --depth=1
+          cd emsdk
+          ./emsdk install tot
+          ./emsdk activate tot
+      - name: Build for web
+        run: |
+          source emsdk/emsdk_env.sh
+          mkdir build
+          cd build
+          emcmake cmake ..
+          cmake --build . --parallel
+      - name: Prepare for upload
+        run: |
+           mkdir _site
+           mv build/sdl-min.html _site/index.html
+           mv build/sdl-* _site/
+      - name: Fix permissions
+        run: |
+         chmod -c -R +rX "_site/" | while read line; do
+           echo "::warning title=Invalid file permissions automatically fixed::$line"
+         done
+      - name: Upload 
+        uses: actions/upload-pages-artifact@v2
+        
+ # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build-web
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
