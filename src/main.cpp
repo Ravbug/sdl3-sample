@@ -25,7 +25,7 @@ int SDL_AppInit(void** appstate, int argc, char* argv[]) {
         return SDL_Fail();
     }
     
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL, 0);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
     if (!renderer){
         return SDL_Fail();
     }
