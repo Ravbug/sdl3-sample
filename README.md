@@ -5,7 +5,8 @@ bundles.
 See `src/main.cpp` for the code. 
 
 ### Building And Running
-First install your compiler of choice and CMake. Then, follow the commands below:
+Are you a complete beginner? If so, read [this](https://github.com/Ravbug/sdl3-sample/wiki/Setting-up-your-computer)!
+Otherwise, install CMake and your favorite compiler, and follow the commands below:
 ```sh
 # You need to clone with submodules, otherwise SDL will not download.
 git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules
