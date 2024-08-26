@@ -19,10 +19,8 @@ jobs:
       - name: Build for web
         run: |
           source emsdk/emsdk_env.sh
-          mkdir build
-          cd build
-          emcmake cmake ..
-          cmake --build . --parallel
+          emcmake cmake -S . -B build
+          cmake --build build --parallel
       - name: Prepare for upload
         run: |
            mkdir _site

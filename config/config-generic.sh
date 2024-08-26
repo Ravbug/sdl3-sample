@@ -1,9 +1,4 @@
 #!/bin/bash
-cd "${0%/*}"
-cd ..
+cd "${0%/*}"/
 
-name=`uname`
-mkdir -p build
-mkdir -p build/$name
-cd build/$name
-cmake ../..
+cmake -B "../build/`uname`" -S ..

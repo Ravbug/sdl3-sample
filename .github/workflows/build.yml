@@ -16,9 +16,7 @@ jobs:
             with:
                 submodules: true
           - name: Configure
-            run: | 
-                mkdir build && cd build
-                cmake -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DCMAKE_SYSTEM_VERSION="10.0" -A${{ matrix.arch }} ..
+            run: cmake -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DCMAKE_SYSTEM_VERSION="10.0" -A${{ matrix.arch }} -S . -B build
           - name: Build
             run: cmake --build build --target sdl-min --config Release
           - name: Upload Build
@@ -47,9 +45,7 @@ jobs:
             with:
                 xcode-version: "15.2"
           - name: Configure
-            run: | 
-                mkdir build && cd build
-                cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DSDL_STATIC=ON -DSDL_SHARED=OFF ..
+            run: cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DSDL_STATIC=ON -DSDL_SHARED=OFF -S . -B build
           - name: Build
             run: cmake --build build --target install --config Release
 

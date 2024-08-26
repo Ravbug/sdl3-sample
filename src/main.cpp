@@ -5,15 +5,15 @@
 struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    SDL_bool app_quit = SDL_FALSE;
+    SDL_AppResult app_quit = SDL_APP_CONTINUE;
 };
 
-int SDL_Fail(){
+SDL_AppResult SDL_Fail(){
     SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
-    return -1;
+    return SDL_APP_FAILURE;
 }
 
-int SDL_AppInit(void** appstate, int argc, char* argv[]) {
+SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     // init the library, here we make a window so we only need the Video capabilities.
     if (SDL_Init(SDL_INIT_VIDEO)){
         return SDL_Fail();
@@ -51,20 +51,20 @@ int SDL_AppInit(void** appstate, int argc, char* argv[]) {
     
     SDL_Log("Application started successfully!");
 
-    return 0;
+    return SDL_APP_CONTINUE;
 }
 
-int SDL_AppEvent(void *appstate, const SDL_Event* event) {
+SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event* event) {
     auto* app = (AppContext*)appstate;
     
     if (event->type == SDL_EVENT_QUIT) {
-        app->app_quit = SDL_TRUE;
+        app->app_quit = SDL_APP_SUCCESS;
     }
 
-    return 0;
+    return SDL_APP_CONTINUE;
 }
 
-int SDL_AppIterate(void *appstate) {
+SDL_AppResult SDL_AppIterate(void *appstate) {
     auto* app = (AppContext*)appstate;
 
     // draw a color
