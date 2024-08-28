@@ -15,7 +15,7 @@ mkdir build
 cd build
 cmake ..
 ```
-You can also use an init script inside `config/`. Then open the IDE project inside `build/` 
+You can also use an init script inside [`config/`](config/). Then open the IDE project inside `build/` 
 (If you had CMake generate one) and run!
 
 ## Supported Platforms
@@ -30,7 +30,7 @@ I have tested the following:
 - Web browsers (via Emscripten)*
 - Android*
 
-*See further instructions in `config/`
+*See further instructions in [`config/`](config/)
 
 ## Updating SDL
 Just update the submodule:
