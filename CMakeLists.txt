@@ -23,39 +23,30 @@ else()
 	add_executable(${EXECUTABLE_NAME})
 endif()
 
+# Add your sources to the target
 target_sources(${EXECUTABLE_NAME} 
 PRIVATE 
     src/main.cpp
     src/iosLaunchScreen.storyboard
-    src/Sample.appxManifest
 )
-
 # What is iosLaunchScreen.storyboard? This file describes what Apple's mobile platforms
 # should show the user while the application is starting up. If you don't include one,
 # then you get placed in a compatibility mode that does not allow HighDPI.
 # This file is referenced inside Info.plist.in, where it is marked as the launch screen file.
 # It is also ignored on non-Apple platforms. 
 
-# What is Sample.appxManifest? This file describes deployment settings for Universal Windows Platform
-# applications, like splash screen and icon resolutions, which are required for the application to run. 
-# It is ignored on other platforms. Below, we add those images. 
-if (WINDOWS_STORE)
-    target_sources("${EXECUTABLE_NAME}" PRIVATE "src/logo44.png" "src/logo150.png" "src/logo50.png" "src/logo620x300.png")
-elseif(APPLE)
+# To get an app icon on Apple platforms, add it to your executable.
+# Afterward, the image file in Info.plist.in.
+if(APPLE)
     target_sources("${EXECUTABLE_NAME}" PRIVATE "src/logo.png")
 endif()
 
-# use C++11
+# Set C++ version
 target_compile_features(${EXECUTABLE_NAME} PUBLIC cxx_std_20)
 
+# on Web targets, we need CMake to generate a HTML webpage. 
 if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
 	set(CMAKE_EXECUTABLE_SUFFIX ".html" CACHE INTERNAL "")
-endif()
-
-# If targeting Windows UWP, enable Windows Runtime Compilation
-# if using a C++ version older than C++20, you also need /ZW
-if(WINDOWS_STORE)
-    target_compile_options(${EXECUTABLE_NAME} PUBLIC "/EHsc")
 endif()
 
 # Configure SDL by calling its CMake file.

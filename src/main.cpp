@@ -54,7 +54,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event* event) {
+SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event* event) {
     auto* app = (AppContext*)appstate;
     
     if (event->type == SDL_EVENT_QUIT) {
@@ -80,7 +80,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     return app->app_quit;
 }
 
-void SDL_AppQuit(void* appstate) {
+void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     auto* app = (AppContext*)appstate;
     if (app) {
         SDL_DestroyRenderer(app->renderer);
@@ -88,6 +88,5 @@ void SDL_AppQuit(void* appstate) {
         delete app;
     }
 
-    SDL_Quit();
     SDL_Log("Application quit successfully!");
 }

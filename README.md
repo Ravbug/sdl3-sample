@@ -26,11 +26,12 @@ I have tested the following:
 - visionOS
 - Windows
 - Linux
-- UWP
 - Web browsers (via Emscripten)*
 - Android*
 
 *See further instructions in [`config/`](config/)
+
+Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull/10731) during its development. For historical reasons, you can a working UWP sample via this commit: https://github.com/Ravbug/sdl3-sample/tree/df270daa8d6d48426e128e50c73357dfdf89afbf
 
 ## Updating SDL
 Just update the submodule:
