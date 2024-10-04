@@ -2,7 +2,7 @@
 This is a minimal example for building and using SDL3 from source 
 using C++ and CMake. It also demonstrates setting up things like macOS/iOS
 bundles.
-See `src/main.cpp` for the code. 
+See [src/main.cpp](src/main.cpp) for the code. 
 
 ### Building And Running
 Are you a complete beginner? If so, read [this](https://github.com/Ravbug/sdl3-sample/wiki/Setting-up-your-computer)!
@@ -11,9 +11,7 @@ Otherwise, install CMake and your favorite compiler, and follow the commands bel
 # You need to clone with submodules, otherwise SDL will not download.
 git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules
 cd sdl3-sample
-mkdir build
-cd build
-cmake ..
+cmake -S . -B build
 ```
 You can also use an init script inside [`config/`](config/). Then open the IDE project inside `build/` 
 (If you had CMake generate one) and run!
@@ -31,7 +29,7 @@ I have tested the following:
 
 *See further instructions in [`config/`](config/)
 
-Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull/10731) during its development. For historical reasons, you can a working UWP sample via this commit: https://github.com/Ravbug/sdl3-sample/tree/df270daa8d6d48426e128e50c73357dfdf89afbf
+Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull/10731) during its development. For historical reasons, you can a working UWP sample via this commit: [df270da](https://github.com/Ravbug/sdl3-sample/tree/df270daa8d6d48426e128e50c73357dfdf89afbf)
 
 ## Updating SDL
 Just update the submodule:
