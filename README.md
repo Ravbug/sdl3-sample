@@ -18,18 +18,20 @@ You can also use an init script inside [`config/`](config/). Then open the IDE p
 
 ## Supported Platforms
 I have tested the following:
-- macOS
-- iOS
-- tvOS
-- visionOS
-- Windows
-- Linux
-- Web browsers (via Emscripten)*
-- Android*
+| Platform | Architecture | Generator |
+| --- | --- | --- |
+| macOS | x86_64, arm64 | Xcode |
+| iOS | x86_64, arm64 | Xcode |
+| tvOS | x86_64, arm64 | Xcode |
+| visionOS* | arm64 | Xcode |
+| Windows | x86_64, arm64 | Visual Studio |
+| Linux | x86_64, arm64 | Ninja, Make |
+| Web* | wasm | Ninja, Make |
+| Android* | x86, x64, arm, arm64 | Ninja via Android Studio |
 
 *See further instructions in [`config/`](config/)
 
-Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull/10731) during its development. For historical reasons, you can a working UWP sample via this commit: [df270da](https://github.com/Ravbug/sdl3-sample/tree/df270daa8d6d48426e128e50c73357dfdf89afbf)
+Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull/10731) during its development. For historical reasons, you can get a working UWP sample via this commit: [df270da](https://github.com/Ravbug/sdl3-sample/tree/df270daa8d6d48426e128e50c73357dfdf89afbf)
 
 ## Updating SDL
 Just update the submodule:
