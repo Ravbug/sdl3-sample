@@ -90,7 +90,7 @@ elseif(EMSCRIPTEN)
 else()
     # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
     macro(copy_helper filename)
-        set(outname "${CMAKE_BINARY_DIR}/${filename}")
+        set(outname "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/${filename}")
         add_custom_command(POST_BUILD 
             TARGET "${EXECUTABLE_NAME}"
 		    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/src/${filename}" "${outname}"
