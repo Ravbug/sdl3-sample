@@ -4,6 +4,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <cmath>
 #include <string_view>
+#include <filesystem>
 
 struct AppContext {
     SDL_Window* window;
@@ -26,7 +27,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     
     // init TTF
     if (not TTF_Init()) {
-        SDL_Fail();
+        return SDL_Fail();
     }
     
     // create a window
@@ -40,11 +41,16 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     if (not renderer){
         return SDL_Fail();
     }
-
+    
     // load the font
-    TTF_Font* font = TTF_OpenFont("Inter-VariableFont.ttf", 36);
+    const auto basePath = SDL_GetBasePath();
+    if (not basePath){
+        return SDL_Fail();
+    }
+    const auto fontPath = std::filesystem::path(basePath) / "Inter-VariableFont.ttf";
+    TTF_Font* font = TTF_OpenFont(fontPath.string().c_str(), 36);
     if (not font) {
-        SDL_Fail();
+        return SDL_Fail();
     }
 
     // render the font to a surface
