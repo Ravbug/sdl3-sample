@@ -54,9 +54,42 @@ endif()
 # pollute upwards into our configuration.
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
+# SDL_ttf (used for rendering text) depends on Freetype. If you don't want SDL_ttf, then remove this section.
+add_subdirectory(freetype EXCLUDE_FROM_ALL)
+if(NOT TARGET Freetype::Freetype)
+    add_library(Freetype::Freetype ALIAS freetype)
+endif()
+set(SDLTTF_VENDORED OFF CACHE INTERNAL "")
+set(FREETYPE_LIBRARY freetype)
+set(FREETYPE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/freetype/include/" "${CMAKE_CURRENT_LIST_DIR}/freetype/include/")
+add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)	
+
 # Link SDL to our executable. This also makes its include directory available to us. 
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC SDL3::SDL3)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
+	SDL3::SDL3
+	SDL3_ttf::SDL3_ttf  # remove if you are not using SDL_ttf
+    freetype
+)
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
+
+# Dealing with assets
+# We have some non-code resources that our application needs in order to work. How we deal with those differs per platform.
+if (APPLE)
+    
+elseif(EMSCRIPTEN)
+    
+else()
+    # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
+    macro(copy_helper filename)
+        set(outname "${CMAKE_BINARY_DIR}/${filename}")
+        add_custom_command(POST_BUILD 
+            TARGET "${EXECUTABLE_NAME}"
+		    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/src/${filename}" "${outname}"
+		    DEPENDS "${filename}"
+	    )
+    endmacro()
+    copy_helper("Inter-VariableFont.ttf")
+endif()
 
 # set some extra configs for each platform
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES 

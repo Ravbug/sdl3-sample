@@ -1,11 +1,15 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_init.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <cmath>
+#include <string_view>
 
 struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
+    SDL_Texture* messageTex;
+    SDL_FRect messageDest;
     SDL_AppResult app_quit = SDL_APP_CONTINUE;
 };
 
@@ -20,16 +24,44 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
         return SDL_Fail();
     }
     
+    // init TTF
+    if (not TTF_Init()) {
+        SDL_Fail();
+    }
+    
     // create a window
     SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE);
     if (not window){
         return SDL_Fail();
     }
     
+    // create a renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
     if (not renderer){
         return SDL_Fail();
     }
+
+    // load the font
+    TTF_Font* font = TTF_OpenFont("Inter-VariableFont.ttf", 36);
+    if (not font) {
+        SDL_Fail();
+    }
+
+    // render the font to a surface
+    const std::string_view text = "Hello SDL!";
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text.data(), text.length(), { 255,255,255 });
+
+    // make a texture from the surface
+    SDL_Texture* messageTex = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    // get the on-screen dimensions of the text. this is necessary for rendering it
+    auto texprops = SDL_GetTextureProperties(messageTex);
+    SDL_FRect text_rect{
+            .x = 0,
+            .y = 0,
+            .w = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_WIDTH_NUMBER, 0)),
+            .h = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_HEIGHT_NUMBER, 0))
+    };
     
     // print some information about the window
     SDL_ShowWindow(window);
@@ -46,8 +78,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 
     // set up the application data
     *appstate = new AppContext{
-       window,
-       renderer,
+       .window = window,
+       .renderer = renderer,
+       .messageTex = messageTex,
+       .messageDest = text_rect
     };
     
     SDL_Log("Application started successfully!");
@@ -76,7 +110,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     
     SDL_SetRenderDrawColor(app->renderer, red, green, blue, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(app->renderer);
+    SDL_RenderTexture(app->renderer, app->messageTex, NULL, &app->messageDest);
     SDL_RenderPresent(app->renderer);
+
 
     return app->app_quit;
 }
