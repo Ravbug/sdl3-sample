@@ -72,7 +72,6 @@ add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
 	SDL3::SDL3
 	SDL3_ttf::SDL3_ttf  # remove if you are not using SDL_ttf
-    freetype
 )
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
