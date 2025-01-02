@@ -6,6 +6,14 @@
 #include <string_view>
 #include <filesystem>
 
+#if __ANDROID__
+#include <SDL3/SDL_system.h>
+auto androidBasePath(){
+    auto path = std::filesystem::path(SDL_GetAndroidInternalStoragePath())/".."/"assets";
+    return path;
+}
+#endif
+
 struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -43,10 +51,15 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     }
     
     // load the font
+#if __ANDROID__
+    const auto basePath = androidBasePath();
+#else
     const auto basePath = SDL_GetBasePath();
-    if (not basePath){
+     if (not basePath){
         return SDL_Fail();
     }
+#endif
+
     const auto fontPath = std::filesystem::path(basePath) / "Inter-VariableFont.ttf";
     TTF_Font* font = TTF_OpenFont(fontPath.string().c_str(), 36);
     if (not font) {

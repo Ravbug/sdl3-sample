@@ -18,13 +18,8 @@ android {
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
-            ndkBuild {
-                arguments "APP_PLATFORM=android-16"
-                // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                // abiFilters 'arm64-v8a'
-            }
             cmake {
-                arguments "-DANDROID_APP_PLATFORM=android-16", "-DANDROID_STL=c++_static"
+                arguments "-DANDROID_APP_PLATFORM=android-16", "-DANDROID_STL=c++_static", "-DCMAKE_VERBOSE_MAKEFILE=ON", "-DMOBILE_ASSETS_DIR=${System.getProperty("user.dir")}/app/src/main/assets"
                 // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
                 // abiFilters 'arm64-v8a'
             }

@@ -49,7 +49,7 @@ endif()
 target_compile_features(${EXECUTABLE_NAME} PUBLIC cxx_std_20)
 
 # on Web targets, we need CMake to generate a HTML webpage. 
-if(CMAKE_SYSTEM_NAME MATCHES Emscripten)
+if(EMSCRIPTEN)
 	set(CMAKE_EXECUTABLE_SUFFIX ".html" CACHE INTERNAL "")
 endif()
 
@@ -94,10 +94,18 @@ elseif(EMSCRIPTEN)
     # somewhat unintuitively, this is done via a linker argument.
     target_link_libraries(${EXECUTABLE_NAME} PRIVATE "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf@/\"")
 else()
+    if (ANDROID)
+        file(MAKE_DIRECTORY "${MOBILE_ASSETS_DIR}")    # we need to create the project Assets dir otherwise CMake won't copy our assets.
+    endif()
+
     # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
     macro(copy_helper filename)
-        set(outname "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/${filename}")
-        add_custom_command(POST_BUILD 
+        if (ANDROID)
+            set(outname "${MOBILE_ASSETS_DIR}/${filename}")    # MOBILE_ASSETS_DIR is set in the gradle file
+        else()
+            set(outname "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/${filename}")
+        endif()
+        add_custom_command(POST_BUILD
             TARGET "${EXECUTABLE_NAME}"
 		    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/src/${filename}" "${outname}"
 		    DEPENDS "${filename}"
