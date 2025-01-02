@@ -11,7 +11,7 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 # Declare the project
 project(sdl-min)
 
-if (APPLE OR EMSCRIPTEN)
+if (IOS OR TVOS OR VISIONOS OR EMSCRIPTEN)
     set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")    # Disable shared builds on platforms where it does not make sense to use them
 endif()
 
@@ -145,10 +145,18 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "
 # note that fixup_bundle does not work on iOS, so you will want to use static libraries 
 # or manually copy dylibs and set rpaths
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    # tell Install about the target, otherwise fixup won't know about the transitive dependencies
+    install(TARGETS ${EXECUTABLE_NAME}
+    	BUNDLE DESTINATION ./install COMPONENT Runtime
+   	    RUNTIME DESTINATION ./install/bin COMPONENT Runtime
+    )
+	
+    set(DEP_DIR "${CMAKE_BINARY_DIR}")  # where to look for dependencies when fixing up
     INSTALL(CODE 
         "include(BundleUtilities)
-        fixup_bundle(\"$<TARGET_BUNDLE_DIR:${EXECUTABLE_NAME}>\" \"\" \"\")
+        fixup_bundle(\"$<TARGET_BUNDLE_DIR:${EXECUTABLE_NAME}>\" \"\" \"${DEP_DIR}\")
         " 
-        COMPONENT Runtime
     )
+    set(CPACK_GENERATOR "DragNDrop")
+    include(CPack)
 endif()
