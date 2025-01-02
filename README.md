@@ -1,5 +1,5 @@
 ## SDL3 App From Source Minimal Example
-This is a minimal example for building and using SDL3 from source 
+This is a minimal example for building and using SDL3 and SDL_ttf_ from source 
 using C++ and CMake. It also demonstrates setting up things like macOS/iOS
 bundles.
 See [src/main.cpp](src/main.cpp) for the code. 
@@ -37,6 +37,10 @@ Note: UWP support was [removed from SDL3](https://github.com/libsdl-org/SDL/pull
 Just update the submodule:
 ```sh
 cd SDL
+git pull
+cd ..
+
+cd SDL_ttf
 git pull
 ```
 You don't need to use a submodule, you can also copy the source in directly. This
