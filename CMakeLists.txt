@@ -74,8 +74,8 @@ add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 # Link SDL to our executable. This also makes its include directory available to us. 
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
 	SDL3::SDL3
-	SDL3_ttf::SDL3_ttf  # remove if you are not using SDL_ttf
-    SDL3_mixer::SDL3_mixer
+	SDL3_ttf::SDL3_ttf      # remove if you are not using SDL_ttf
+    SDL3_mixer::SDL3_mixer  # remove if you are not using SDL_mixer
 )
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
@@ -152,5 +152,3 @@ if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
         COMPONENT Runtime
     )
 endif()
-install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION ./install)
-
