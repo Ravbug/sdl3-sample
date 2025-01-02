@@ -6,14 +6,6 @@
 #include <string_view>
 #include <filesystem>
 
-#if __ANDROID__
-#include <SDL3/SDL_system.h>
-auto androidBasePath(){
-    auto path = std::filesystem::path(SDL_GetAndroidInternalStoragePath())/".."/"assets";
-    return path;
-}
-#endif
-
 struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -52,7 +44,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     
     // load the font
 #if __ANDROID__
-    const auto basePath = androidBasePath();
+    const auto basePath = "";   // on Android we do not want to use basepath. Instead, assets are available at the root directory.
 #else
     const auto basePath = SDL_GetBasePath();
      if (not basePath){
