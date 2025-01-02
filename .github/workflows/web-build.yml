@@ -9,7 +9,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
       - name: Get Emscripten
         run: |
           git clone https://github.com/emscripten-core/emsdk.git --depth=1

@@ -14,7 +14,7 @@ jobs:
         steps:
           - uses: actions/checkout@v4
             with:
-                submodules: true
+                submodules: recursive
           - name: Configure
             run: cmake -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DCMAKE_SYSTEM_VERSION="10.0" -A${{ matrix.arch }} -S . -B build
           - name: Build
@@ -39,7 +39,7 @@ jobs:
         steps:
           - uses: actions/checkout@v4
             with:
-                submodules: true
+                submodules: recursive
           - name: Setup Xcode version
             uses: maxim-lobanov/setup-xcode@v1.6.0
             with:
