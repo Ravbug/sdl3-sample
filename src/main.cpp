@@ -2,6 +2,7 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <cmath>
 #include <string_view>
 #include <filesystem>
@@ -21,7 +22,7 @@ SDL_AppResult SDL_Fail(){
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     // init the library, here we make a window so we only need the Video capabilities.
-    if (not SDL_Init(SDL_INIT_VIDEO)){
+    if (not SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         return SDL_Fail();
     }
     
@@ -44,15 +45,16 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     
     // load the font
 #if __ANDROID__
-    const auto basePath = "";   // on Android we do not want to use basepath. Instead, assets are available at the root directory.
+    std::filesystem::path basePath = "";   // on Android we do not want to use basepath. Instead, assets are available at the root directory.
 #else
-    const auto basePath = SDL_GetBasePath();
-     if (not basePath){
+    auto basePathPtr = SDL_GetBasePath();
+     if (not basePathPtr){
         return SDL_Fail();
     }
+     const std::filesystem::path basePath = basePathPtr;
 #endif
 
-    const auto fontPath = std::filesystem::path(basePath) / "Inter-VariableFont.ttf";
+    const auto fontPath = basePath / "Inter-VariableFont.ttf";
     TTF_Font* font = TTF_OpenFont(fontPath.string().c_str(), 36);
     if (not font) {
         return SDL_Fail();
@@ -73,6 +75,25 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
             .w = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_WIDTH_NUMBER, 0)),
             .h = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_HEIGHT_NUMBER, 0))
     };
+
+    // init SDL Mixer
+    auto audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+    if (not audioDevice) {
+        return SDL_Fail();
+    }
+    if (not Mix_OpenAudio(audioDevice, NULL)) {
+        return SDL_Fail();
+    }
+
+    // load the music
+    auto musicPath = basePath / "the_entertainer.ogg";
+    auto music = Mix_LoadMUS(musicPath.string().c_str());
+    if (not music) {
+        return SDL_Fail();
+    }
+
+    // play the music (does not loop)
+    Mix_PlayMusic(music, 0);
     
     // print some information about the window
     SDL_ShowWindow(window);

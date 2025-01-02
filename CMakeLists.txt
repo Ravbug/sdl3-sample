@@ -68,10 +68,18 @@ set(FREETYPE_LIBRARY freetype)
 set(FREETYPE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/freetype/include/" "${CMAKE_CURRENT_LIST_DIR}/freetype/include/")
 add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)	
 
+# SDL_mixer (used for playing audio)
+set(SDLMIXER_OPUS OFF)
+add_subdirectory(ogg EXCLUDE_FROM_ALL)
+set(SDLMIXER_VENDORED OFF)
+set(SDLMIXER_MIDI_NATIVE OFF)
+add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
+
 # Link SDL to our executable. This also makes its include directory available to us. 
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
 	SDL3::SDL3
 	SDL3_ttf::SDL3_ttf  # remove if you are not using SDL_ttf
+    SDL3_mixer::SDL3_mixer
 )
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
@@ -88,10 +96,14 @@ if (APPLE)
         set_property(SOURCE ${FILE} PROPERTY MACOSX_PACKAGE_LOCATION "Resources/${relpath}")
     endmacro()
     add_resource("${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf")
+    add_resource("${CMAKE_CURRENT_LIST_DIR}/src/the_entertainer.ogg")
 elseif(EMSCRIPTEN)
     # on the web, we have to put the files inside of the webassembly
     # somewhat unintuitively, this is done via a linker argument.
-    target_link_libraries(${EXECUTABLE_NAME} PRIVATE "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf@/\"")
+    target_link_libraries(${EXECUTABLE_NAME} PRIVATE 
+        "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf@/\""
+        "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/the_entertainer.ogg@/\""
+    )
 else()
     if (ANDROID)
         file(MAKE_DIRECTORY "${MOBILE_ASSETS_DIR}")    # we need to create the project Assets dir otherwise CMake won't copy our assets.
@@ -111,6 +123,7 @@ else()
 	    )
     endmacro()
     copy_helper("Inter-VariableFont.ttf")
+    copy_helper("the_entertainer.ogg")
 endif()
 
 # set some extra configs for each platform
