@@ -11,6 +11,8 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 # Declare the project
 project(sdl-min)
 
+set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
+
 # Set the name of the executable
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 
@@ -86,7 +88,9 @@ if (APPLE)
     endmacro()
     add_resource("${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf")
 elseif(EMSCRIPTEN)
-    
+    # on the web, we have to put the files inside of the webassembly
+    # somewhat unintuitively, this is done via a linker argument.
+    target_link_libraries(${EXECUTABLE_NAME} PRIVATE "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf@/\"")
 else()
     # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
     macro(copy_helper filename)
