@@ -27,6 +27,8 @@ jobs:
                 path: |
                     build/Release/*.exe
                     build/Release/*.dll
+                    build/Release/*.ttf
+                    build/Release/*.ogg
 
     build-mac:
         name: Build for Apple
