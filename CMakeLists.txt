@@ -58,20 +58,10 @@ endif()
 # pollute upwards into our configuration.
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
-# SDL_ttf (used for rendering text) depends on Freetype. If you don't want SDL_ttf, then remove this section.
-add_subdirectory(freetype EXCLUDE_FROM_ALL)
-if(NOT TARGET Freetype::Freetype)
-    add_library(Freetype::Freetype ALIAS freetype)
-endif()
-set(SDLTTF_VENDORED OFF CACHE INTERNAL "")
-set(FREETYPE_LIBRARY freetype)
-set(FREETYPE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/freetype/include/" "${CMAKE_CURRENT_LIST_DIR}/freetype/include/")
+# If you don't want SDL_ttf, then remove this section.
 add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)	
 
 # SDL_mixer (used for playing audio)
-set(SDLMIXER_OPUS OFF)
-add_subdirectory(ogg EXCLUDE_FROM_ALL)
-set(SDLMIXER_VENDORED OFF)
 set(SDLMIXER_MIDI_NATIVE OFF)
 add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
