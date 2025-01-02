@@ -72,6 +72,7 @@ add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)
 set(SDLMIXER_OPUS OFF)
 add_subdirectory(ogg EXCLUDE_FROM_ALL)
 set(SDLMIXER_VENDORED OFF)
+set(SDLMIXER_MIDI_NATIVE OFF)
 add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
 # Link SDL to our executable. This also makes its include directory available to us. 
