@@ -11,7 +11,9 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 # Declare the project
 project(sdl-min)
 
-set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
+if (IOS OR TVOS OR VISIONOS OR EMSCRIPTEN)
+    set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")    # Disable shared builds on platforms where it does not make sense to use them
+endif()
 
 # Set the name of the executable
 set(EXECUTABLE_NAME ${PROJECT_NAME})
