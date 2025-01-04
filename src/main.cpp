@@ -34,7 +34,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     }
     
     // create a window
-    SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (not window){
         return SDL_Fail();
     }
@@ -162,8 +162,8 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
 
-        Mix_FadeOutMusic(500);  // prevent the music from abruptly ending. this call blocks until the music has finished fading
-        Mix_FreeMusic(app->music);
+        Mix_FadeOutMusic(1000);  // prevent the music from abruptly ending.
+        Mix_FreeMusic(app->music); // this call blocks until the music has finished fading
         Mix_CloseAudio();
         SDL_CloseAudioDevice(app->audioDevice);
 
@@ -173,4 +173,5 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     Mix_Quit();
 
     SDL_Log("Application quit successfully!");
+    SDL_Quit();
 }
