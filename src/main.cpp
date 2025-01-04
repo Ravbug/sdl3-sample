@@ -164,6 +164,7 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
 
         Mix_FadeOutMusic(500);  // prevent the music from abruptly ending. this call blocks until the music has finished fading
         Mix_FreeMusic(app->music);
+        Mix_CloseAudio();
         SDL_CloseAudioDevice(app->audioDevice);
 
         delete app;
