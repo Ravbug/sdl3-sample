@@ -12,6 +12,8 @@ struct AppContext {
     SDL_Renderer* renderer;
     SDL_Texture* messageTex;
     SDL_FRect messageDest;
+    SDL_AudioDeviceID audioDevice;
+    Mix_Music* music;
     SDL_AppResult app_quit = SDL_APP_CONTINUE;
 };
 
@@ -67,6 +69,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     // make a texture from the surface
     SDL_Texture* messageTex = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
+    // we no longer need the font or the surface, so we can destroy those now.
+    TTF_CloseFont(font);
+    SDL_DestroySurface(surfaceMessage);
+
     // get the on-screen dimensions of the text. this is necessary for rendering it
     auto texprops = SDL_GetTextureProperties(messageTex);
     SDL_FRect text_rect{
@@ -113,7 +119,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
        .window = window,
        .renderer = renderer,
        .messageTex = messageTex,
-       .messageDest = text_rect
+       .messageDest = text_rect,
+       .audioDevice = audioDevice,
+       .music = music,
     };
     
     SDL_Log("Application started successfully!");
@@ -145,7 +153,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_RenderTexture(app->renderer, app->messageTex, NULL, &app->messageDest);
     SDL_RenderPresent(app->renderer);
 
-
     return app->app_quit;
 }
 
@@ -154,8 +161,15 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     if (app) {
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
+
+        Mix_FadeOutMusic(500);  // prevent the music from abruptly ending. this call blocks until the music has finished fading
+        Mix_FreeMusic(app->music);
+        SDL_CloseAudioDevice(app->audioDevice);
+
         delete app;
     }
+    TTF_Quit();
+    Mix_Quit();
 
     SDL_Log("Application quit successfully!");
 }
