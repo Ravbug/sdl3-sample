@@ -44,9 +44,7 @@ cd SDL_ttf
 git pull
 ```
 You don't need to use a submodule, you can also copy the source in directly. This
-repository uses a submodule to keep its size to a minimum. Note that as of writing, SDL3 is
-in development, so expect APIs to change. 
-
+repository uses a submodule to keep its size to a minimum.
 
 ## Reporting issues
 Is something not working? Create an Issue or send a Pull Request on this repository!
