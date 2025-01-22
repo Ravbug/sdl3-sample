@@ -92,6 +92,10 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
 	SDL3_mixer::SDL3_mixer  # remove if you are not using SDL_mixer
 	SDL3_image::SDL3_image	# remove if you are not using SDL_image
 )
+if (APPLE)
+	find_library(${CG_LIB} CoreGraphics)
+	target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${CG_LIB})
+endif()
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
 # Dealing with assets
