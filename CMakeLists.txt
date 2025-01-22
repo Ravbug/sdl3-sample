@@ -15,6 +15,12 @@ if (APPLE OR EMSCRIPTEN)
     set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")    # Disable shared builds on platforms where it does not make sense to use them
 endif()
 
+if(MSVC)
+    if(NOT CMAKE_GENERATOR STREQUAL "Ninja")
+        add_definitions(/MP)				# parallelize each target, unless Ninja is the generator
+    endif()
+endif()
+
 # Set the name of the executable
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 
@@ -71,11 +77,20 @@ set(SDLMIXER_OPUS OFF)
 set(SDLMIXER_VENDORED ON)   # tell SDL_mixer to build its own dependencies
 add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
+# SDL_image (used for loading various image formats)
+set(SDLIMAGE_VENDORED ON)
+set(SDLIMAGE_AVIF OFF)	# disable formats we don't use to make the build faster and smaller.
+set(SDLIMAGE_BMP OFF)
+set(SDLIMAGE_JPEG OFF)
+set(SDLIMAGE_WEBP OFF)
+add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
+
 # Link SDL to our executable. This also makes its include directory available to us. 
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
 	SDL3::SDL3
 	SDL3_ttf::SDL3_ttf      # remove if you are not using SDL_ttf
-    SDL3_mixer::SDL3_mixer  # remove if you are not using SDL_mixer
+	SDL3_mixer::SDL3_mixer  # remove if you are not using SDL_mixer
+	SDL3_image::SDL3_image	# remove if you are not using SDL_image
 )
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
@@ -93,23 +108,28 @@ if (APPLE)
     endmacro()
     add_resource("${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf")
     add_resource("${CMAKE_CURRENT_LIST_DIR}/src/the_entertainer.ogg")
+    add_resource("${CMAKE_CURRENT_LIST_DIR}/src/gs_tiger.svg")
 elseif(EMSCRIPTEN)
     # on the web, we have to put the files inside of the webassembly
     # somewhat unintuitively, this is done via a linker argument.
     target_link_libraries(${EXECUTABLE_NAME} PRIVATE 
         "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/Inter-VariableFont.ttf@/\""
         "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/the_entertainer.ogg@/\""
+        "--preload-file \"${CMAKE_CURRENT_LIST_DIR}/src/gs_tiger.svg@/\""
     )
 else()
     if (ANDROID)
         file(MAKE_DIRECTORY "${MOBILE_ASSETS_DIR}")    # we need to create the project Assets dir otherwise CMake won't copy our assets.
     endif()
 
-    # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
+    
     macro(copy_helper filename)
         if (ANDROID)
-            set(outname "${MOBILE_ASSETS_DIR}/${filename}")    # MOBILE_ASSETS_DIR is set in the gradle file
+            # MOBILE_ASSETS_DIR is set in the gradle file via the cmake command line and points to the Android Studio Assets folder. 
+            # when we copy assets there, the Android build pipeline knows to add them to the apk. 
+            set(outname "${MOBILE_ASSETS_DIR}/${filename}")    
         else()
+            # for platforms that do not have a good packaging format, all we can do is copy the assets to the process working directory.
             set(outname "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/${filename}")
         endif()
         add_custom_command(POST_BUILD
@@ -120,6 +140,7 @@ else()
     endmacro()
     copy_helper("Inter-VariableFont.ttf")
     copy_helper("the_entertainer.ogg")
+    copy_helper("gs_tiger.svg")
 endif()
 
 # set some extra configs for each platform

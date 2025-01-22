@@ -3,14 +3,18 @@
 #include <SDL3/SDL_init.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_image/SDL_image.h>
 #include <cmath>
 #include <string_view>
 #include <filesystem>
 
+constexpr uint32_t windowStartWidth = 400;
+constexpr uint32_t windowStartHeight = 400;
+
 struct AppContext {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    SDL_Texture* messageTex;
+    SDL_Texture* messageTex, *imageTex;
     SDL_FRect messageDest;
     SDL_AudioDeviceID audioDevice;
     Mix_Music* music;
@@ -34,7 +38,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     }
     
     // create a window
-    SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+   
+    SDL_Window* window = SDL_CreateWindow("SDL Minimal Sample", windowStartWidth, windowStartHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (not window){
         return SDL_Fail();
     }
@@ -73,13 +78,19 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     TTF_CloseFont(font);
     SDL_DestroySurface(surfaceMessage);
 
+    // load the SVG
+    auto svg_surface = IMG_Load((basePath / "gs_tiger.svg").string().c_str());
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, svg_surface);
+    SDL_DestroySurface(svg_surface);
+    
+
     // get the on-screen dimensions of the text. this is necessary for rendering it
-    auto texprops = SDL_GetTextureProperties(messageTex);
+    auto messageTexProps = SDL_GetTextureProperties(messageTex);
     SDL_FRect text_rect{
             .x = 0,
             .y = 0,
-            .w = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_WIDTH_NUMBER, 0)),
-            .h = float(SDL_GetNumberProperty(texprops, SDL_PROP_TEXTURE_HEIGHT_NUMBER, 0))
+            .w = float(SDL_GetNumberProperty(messageTexProps, SDL_PROP_TEXTURE_WIDTH_NUMBER, 0)),
+            .h = float(SDL_GetNumberProperty(messageTexProps, SDL_PROP_TEXTURE_HEIGHT_NUMBER, 0))
     };
 
     // init SDL Mixer
@@ -119,10 +130,13 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
        .window = window,
        .renderer = renderer,
        .messageTex = messageTex,
+       .imageTex = tex,
        .messageDest = text_rect,
        .audioDevice = audioDevice,
        .music = music,
     };
+    
+    SDL_SetRenderVSync(renderer, -1);   // enable vysnc
     
     SDL_Log("Application started successfully!");
 
@@ -150,7 +164,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     
     SDL_SetRenderDrawColor(app->renderer, red, green, blue, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(app->renderer);
+
+    // Renderer uses the painter's algorithm to make the text appear above the image, we must render the image first.
+    SDL_RenderTexture(app->renderer, app->imageTex, NULL, NULL);
     SDL_RenderTexture(app->renderer, app->messageTex, NULL, &app->messageDest);
+
     SDL_RenderPresent(app->renderer);
 
     return app->app_quit;
