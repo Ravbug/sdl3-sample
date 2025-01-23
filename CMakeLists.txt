@@ -94,7 +94,8 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
 )
 if (APPLE)
 	find_library(IO_LIB ImageIO)
-	target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${IO_LIB})
+ 	find_library(CS_LIB CoreServices)
+	target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${IO_LIB} ${CS_LIB})
 endif()
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
