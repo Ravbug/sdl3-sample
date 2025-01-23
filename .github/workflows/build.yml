@@ -50,11 +50,11 @@ jobs:
             with: 
                 name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
                 path: |
-                    build/sdl-min
-                    build/*.dll
-                    build/*.ttf
-                    build/*.ogg
-                    build/*.svg
+                    build/Release/sdl-min
+                    build/Release/*.so
+                    build/Release/*.ttf
+                    build/Release/*.ogg
+                    build/Release/*.svg
 
     build-mac:
         name: Build for Apple
