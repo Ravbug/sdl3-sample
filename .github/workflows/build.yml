@@ -29,6 +29,32 @@ jobs:
                     build/Release/*.dll
                     build/Release/*.ttf
                     build/Release/*.ogg
+                    build/Release/*.svg
+                    
+    build-linux:
+        name: Build for Linux
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with:
+                submodules: recursive
+          - name: Install Dependencies
+            run: sudo apt install -y --no-install-recommends build-essential git cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev fcitx-libs-dev ibpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev
+          - name: Configure
+            run: cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -S . -B build
+          - name: Build
+            run: cmake --build build --target sdl-min --config Release
+          - name: Upload Build
+            uses: actions/upload-artifact@v4
+            if: ${{ matrix.target != 'WindowsStore' }}
+            with: 
+                name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
+                path: |
+                    build/sdl-min
+                    build/*.dll
+                    build/*.ttf
+                    build/*.ogg
+                    build/*.svg
 
     build-mac:
         name: Build for Apple
