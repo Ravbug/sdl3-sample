@@ -48,7 +48,7 @@ jobs:
             uses: actions/upload-artifact@v4
             if: ${{ matrix.target != 'WindowsStore' }}
             with: 
-                name: sdl-min-${{ matrix.target }}-${{ matrix.arch }}
+                name: sdl-min-Linux
                 path: |
                     build/Release/sdl-min
                     build/Release/*.so
