@@ -92,6 +92,12 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
 	SDL3_image::SDL3_image	# remove if you are not using SDL_image
     SDL3::SDL3              # If using satelite libraries, SDL must be the last item in the list. 
 )
+
+if (APPLE)
+    find_library(IO_LIB ImageIO)
+    find_library(CS_LIB CoreServices)
+    target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${IO_LIB} ${CS_LIB})
+endif()
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
 # Dealing with assets
