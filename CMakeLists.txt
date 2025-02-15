@@ -13,6 +13,9 @@ project(sdl-min)
 
 if ((APPLE AND NOT CMAKE_SYSTEM_NAME MATCHES "Darwin") OR EMSCRIPTEN)
     set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")    # Disable shared builds on platforms where it does not make sense to use them
+    set(SDL_SHARED OFF)
+else()
+    set(SDL_SHARED ON)
 endif()
 
 if(MSVC)
