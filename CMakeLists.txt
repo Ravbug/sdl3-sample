@@ -11,7 +11,7 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 # Declare the project
 project(sdl-min)
 
-if (APPLE OR EMSCRIPTEN)
+if ((APPLE AND NOT CMAKE_SYSTEM_NAME MATCHES "Darwin") OR EMSCRIPTEN)
     set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")    # Disable shared builds on platforms where it does not make sense to use them
 endif()
 
@@ -93,10 +93,14 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     SDL3::SDL3              # If using satelite libraries, SDL must be the last item in the list. 
 )
 
-if (APPLE)
-    find_library(IO_LIB ImageIO)
-    find_library(CS_LIB CoreServices)
-    target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${IO_LIB} ${CS_LIB})
+# SDL_Image bug: https://github.com/libsdl-org/SDL_image/issues/506
+if (APPLE AND NOT BUILD_SHARED_LIBS)
+    find_library(IO_LIB ImageIO REQUIRED)
+    find_library(CS_LIB CoreServices REQUIRED)
+    find_library(CT_LIB CoreText REQUIRED)
+    find_library(CG_LIB CoreGraphics REQUIRED)
+    find_library(CF_LIB CoreFoundation REQUIRED)
+    target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${CF_LIB} ${CT_LIB} ${IO_LIB} ${CS_LIB} ${CG_LIB})
 endif()
 target_compile_definitions(${EXECUTABLE_NAME} PUBLIC SDL_MAIN_USE_CALLBACKS)
 
