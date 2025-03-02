@@ -75,7 +75,8 @@ jobs:
             run: cmake -G "Xcode" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_SYSTEM_NAME=${{ matrix.target }} -DSDL_STATIC=ON -DSDL_SHARED=OFF -S . -B build
           - name: Build
             run: cmake --build build --target install --config Release
-
+          - name: Ad-Hoc Codesign
+            run: codesign -s - -f "./release/sdl-min.app"
           - name: Create DMG
             run: | 
                 cd build
