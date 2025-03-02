@@ -78,7 +78,7 @@ jobs:
           - name: Build
             run: cmake --build build --target install --config Release
           - name: Ad-Hoc Codesign
-            run: codesign -s - -f "./build/release/sdl-min.app"
+            run: codesign -s - -f "./build/release/sdl-min.app" --deep
           - name: Create DMG
             run: | 
                 cd build
