@@ -170,6 +170,7 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
     XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_CURRENTYEAR "${CURRENTYEAR}"
+    RESOURCE "src/iosLaunchScreen.storyboard;src/logo.png"
 )
 
 # on Visual Studio, set our app as the default project
