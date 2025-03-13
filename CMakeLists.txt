@@ -157,6 +157,11 @@ else()
 endif()
 
 # set some extra configs for each platform
+set(RESOURCE_FILES "src/logo.png")
+if(IOS)
+    set(RESOURCE_FILES "src/iosLaunchScreen.storyboard;src/logo.png") # make the splash screen show up on iOS
+endif()
+
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES 
     # On macOS, make a proper .app bundle instead of a bare executable
     MACOSX_BUNDLE TRUE
@@ -170,7 +175,7 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
     XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_CURRENTYEAR "${CURRENTYEAR}"
-    RESOURCE "src/iosLaunchScreen.storyboard;src/logo.png"
+    RESOURCE "${RESOURCE_FILES}"
 )
 
 # on Visual Studio, set our app as the default project
