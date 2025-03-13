@@ -156,6 +156,14 @@ else()
     copy_helper("gs_tiger.svg")
 endif()
 
+set(APPLE_BUNDLE "src/logo.png")
+
+if(CMAKE_SYSTEM_NAME MATCHES "iOS")
+    list(APPEND APPLE_BUNDLE "src/iosLaunchScreen.storyboard")
+endif()
+
+message("${APPLE_BUNDLE}")
+
 # set some extra configs for each platform
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES 
     # On macOS, make a proper .app bundle instead of a bare executable
@@ -170,7 +178,7 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
     XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.ravbug.sdl3-sample"
 	XCODE_ATTRIBUTE_CURRENTYEAR "${CURRENTYEAR}"
-    RESOURCE "src/iosLaunchScreen.storyboard;src/logo.png"
+    RESOURCE "${APPLE_BUNDLE}"
 )
 
 # on Visual Studio, set our app as the default project
