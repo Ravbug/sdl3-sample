@@ -132,6 +132,9 @@ elseif(EMSCRIPTEN)
     )
 else()
     if (ANDROID)
+        if (NOT MOBILE_ASSETS_DIR)
+            message(FATAL_ERROR "Building for Android, but MOBILE_ASSETS_DIR is not set")
+        endif()
         file(MAKE_DIRECTORY "${MOBILE_ASSETS_DIR}")    # we need to create the project Assets dir otherwise CMake won't copy our assets.
     endif()
 
