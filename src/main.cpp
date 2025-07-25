@@ -7,6 +7,7 @@
 #include <cmath>
 #include <string_view>
 #include <filesystem>
+#include <thread>
 
 constexpr uint32_t windowStartWidth = 400;
 constexpr uint32_t windowStartHeight = 400;
@@ -17,7 +18,7 @@ struct AppContext {
     SDL_Texture* messageTex, *imageTex;
     SDL_FRect messageDest;
     SDL_AudioDeviceID audioDevice;
-    Mix_Music* music;
+    MIX_Track* track;
     SDL_AppResult app_quit = SDL_APP_CONTINUE;
 };
 
@@ -34,6 +35,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     
     // init TTF
     if (not TTF_Init()) {
+        return SDL_Fail();
+    }
+    
+    // init Mixer
+    if (not MIX_Init()) {
         return SDL_Fail();
     }
     
@@ -94,23 +100,23 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     };
 
     // init SDL Mixer
-    auto audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-    if (not audioDevice) {
+    MIX_Mixer* mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+    if (mixer == nullptr) {
         return SDL_Fail();
     }
-    if (not Mix_OpenAudio(audioDevice, NULL)) {
-        return SDL_Fail();
-    }
+    
+    auto mixerTrack = MIX_CreateTrack(mixer);
 
     // load the music
     auto musicPath = basePath / "the_entertainer.ogg";
-    auto music = Mix_LoadMUS(musicPath.string().c_str());
+    auto music = MIX_LoadAudio(mixer,musicPath.string().c_str(),false);
     if (not music) {
         return SDL_Fail();
     }
 
     // play the music (does not loop)
-    Mix_PlayMusic(music, 0);
+    MIX_SetTrackAudio(mixerTrack, music);
+    MIX_PlayTrack(mixerTrack, NULL);
     
     // print some information about the window
     SDL_ShowWindow(window);
@@ -132,8 +138,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
        .messageTex = messageTex,
        .imageTex = tex,
        .messageDest = text_rect,
-       .audioDevice = audioDevice,
-       .music = music,
+       .track = mixerTrack,
     };
     
     SDL_SetRenderVSync(renderer, -1);   // enable vysnc
@@ -179,16 +184,17 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     if (app) {
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
-
-        Mix_FadeOutMusic(1000);  // prevent the music from abruptly ending.
-        Mix_FreeMusic(app->music); // this call blocks until the music has finished fading
-        Mix_CloseAudio();
+        
+        // prevent the music from abruptly ending.
+        MIX_StopTrack(app->track, MIX_TrackMSToFrames(app->track, 1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        //Mix_FreeMusic(app->music); // this call blocks until the music has finished fading
         SDL_CloseAudioDevice(app->audioDevice);
 
         delete app;
     }
     TTF_Quit();
-    Mix_Quit();
+    MIX_Quit();
 
     SDL_Log("Application quit successfully!");
     SDL_Quit();
