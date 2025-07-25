@@ -79,6 +79,7 @@ set(SDLMIXER_MOD OFF)
 set(SDLMIXER_OPUS OFF)
 set(SDLMIXER_MP3_MPG123 OFF)
 set(SDLMIXER_VORBIS_VORBISFILE OFF)
+set(SDLMIXER_FLAC_LIBFLAC OFF)
 set(SDLMIXER_VENDORED ON)   # tell SDL_mixer to build its own dependencies
 add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
