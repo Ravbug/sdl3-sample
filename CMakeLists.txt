@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+cmake_policy(SET CMP0175 OLD)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
