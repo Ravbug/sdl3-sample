@@ -153,7 +153,6 @@ else()
         add_custom_command(POST_BUILD
             TARGET "${EXECUTABLE_NAME}"
 		    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/src/${filename}" "${outname}"
-		    DEPENDS "${filename}"
 	    )
     endmacro()
     copy_helper("Inter-VariableFont.ttf")
