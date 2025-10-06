@@ -41,6 +41,13 @@ target_sources(${EXECUTABLE_NAME}
 PRIVATE 
     src/main.cpp
     src/iosLaunchScreen.storyboard
+    src/imgui/imgui.cpp
+    src/imgui/imgui_demo.cpp
+    src/imgui/imgui_draw.cpp
+    src/imgui/imgui_tables.cpp
+    src/imgui/imgui_widgets.cpp
+    src/imgui/imgui_impl_sdl3.cpp
+    src/imgui/imgui_impl_sdlrenderer3.cpp
 )
 # What is iosLaunchScreen.storyboard? This file describes what Apple's mobile platforms
 # should show the user while the application is starting up. If you don't include one,
