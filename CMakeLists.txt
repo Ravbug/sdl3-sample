@@ -88,7 +88,7 @@ add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 set(SDLIMAGE_VENDORED ON)
 set(SDLIMAGE_AVIF OFF)	# disable formats we don't use to make the build faster and smaller.
 set(SDLIMAGE_BMP OFF)
-set(SDLIMAGE_JPEG OFF)
+set(SDLIMAGE_JPG OFF)
 set(SDLIMAGE_WEBP OFF)
 set(SDLIMAGE_PNG_LIBPNG OFF)    # SDL3 includes built-in support for loading PNGs. If you need more than what that supports, enable this option.
 add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
