@@ -14,12 +14,12 @@ constexpr uint32_t windowStartWidth = 400;
 constexpr uint32_t windowStartHeight = 400;
 
 struct AppContext {
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    SDL_Texture* messageTex, *imageTex;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_Texture *messageTex, *imageTex;
     SDL_FRect messageDest;
     SDL_AudioDeviceID audioDevice;
-    MIX_Track* track;
+    MIX_Track *track;
     SDL_AppResult app_quit = SDL_APP_CONTINUE;
 };
 
@@ -28,7 +28,7 @@ SDL_AppResult SDL_Fail(){
     return SDL_APP_FAILURE;
 }
 
-SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     // init the library, here we make a window so we only need the Video capabilities.
     if (not SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         return SDL_Fail();
@@ -40,11 +40,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
         return SDL_Fail();
     }
     
-    SDL_Window* window = SDL_CreateWindow("SDL Minimal Sample", windowStartWidth, windowStartHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    SDL_Window *window = SDL_CreateWindow("SDL Minimal Sample", windowStartWidth, windowStartHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (not window){
         return SDL_Fail();
     }
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
     if (not renderer){
         return SDL_Fail();
     }
@@ -61,17 +61,17 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 #endif
 
     const auto fontPath = basePath / "Inter-VariableFont.ttf";
-    TTF_Font* font = TTF_OpenFont(fontPath.string().c_str(), 36);
+    TTF_Font *font = TTF_OpenFont(fontPath.string().c_str(), 36);
     if (not font) {
         return SDL_Fail();
     }
 
     // render the font to a surface
     const std::string_view text = "Hello SDL!";
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text.data(), text.length(), { 255,255,255 });
+    SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, text.data(), text.length(), { 255,255,255 });
 
     // make a texture from the surface
-    SDL_Texture* messageTex = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Texture *messageTex = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
     // we no longer need the font or the surface, so we can destroy those now.
     TTF_CloseFont(font);
@@ -79,7 +79,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 
     // load the SVG
     auto svg_surface = IMG_Load((basePath / "gs_tiger.svg").string().c_str());
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, svg_surface);
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, svg_surface);
     SDL_DestroySurface(svg_surface);
     
 
@@ -93,7 +93,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     };
 
     // init SDL Mixer
-    MIX_Mixer* mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+    MIX_Mixer *mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
     if (mixer == nullptr) {
         return SDL_Fail();
     }
@@ -141,8 +141,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event* event) {
-    auto* app = (AppContext*)appstate;
+SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
+    auto *app = (AppContext*)appstate;
     
     if (event->type == SDL_EVENT_QUIT) {
         app->app_quit = SDL_APP_SUCCESS;
@@ -152,7 +152,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event* event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-    auto* app = (AppContext*)appstate;
+    auto *app = (AppContext*)appstate;
 
     // draw a color
     auto time = SDL_GetTicks() / 1000.f;
@@ -172,8 +172,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     return app->app_quit;
 }
 
-void SDL_AppQuit(void* appstate, SDL_AppResult result) {
-    auto* app = (AppContext*)appstate;
+void SDL_AppQuit(void *appstate, SDL_AppResult result) {
+    auto *app = (AppContext*)appstate;
     if (app) {
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
