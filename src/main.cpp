@@ -33,25 +33,17 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     if (not SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)){
         return SDL_Fail();
     }
-    
-    // init TTF
     if (not TTF_Init()) {
         return SDL_Fail();
     }
-    
-    // init Mixer
     if (not MIX_Init()) {
         return SDL_Fail();
     }
     
-    // create a window
-   
     SDL_Window* window = SDL_CreateWindow("SDL Minimal Sample", windowStartWidth, windowStartHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (not window){
         return SDL_Fail();
     }
-    
-    // create a renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
     if (not renderer){
         return SDL_Fail();
@@ -142,7 +134,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
        .track = mixerTrack,
     };
     
-    SDL_SetRenderVSync(renderer, -1);   // enable vysnc
+    SDL_SetRenderVSync(renderer, -1);   // enable vsync
     
     SDL_Log("Application started successfully!");
 
