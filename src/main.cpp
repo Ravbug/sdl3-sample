@@ -117,7 +117,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 
     // play the music (does not loop)
     MIX_SetTrackAudio(mixerTrack, music);
-    MIX_PlayTrack(mixerTrack, NULL);
+    MIX_PlayTrack(mixerTrack, 0);
     
     // print some information about the window
     SDL_ShowWindow(window);
