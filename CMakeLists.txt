@@ -20,7 +20,7 @@ endif()
 
 if(MSVC)
     if(NOT CMAKE_GENERATOR STREQUAL "Ninja")
-        add_definitions(/MP)				# parallelize each target, unless Ninja is the generator
+        add_compile_options(/MP)				# parallelize each target, unless Ninja is the generator
     endif()
 endif()
 
